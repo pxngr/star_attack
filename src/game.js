@@ -298,22 +298,83 @@ export class StarAttackGame {
     this.powerups.push({ x, y, kind, radius: 10, speed: 65 });
   }
 
+  spawnLifeBubble(customX = null, customY = -28) {
+    const margin = Math.min(36, this.width * 0.15);
+    const x = customX !== null
+      ? customX
+      : margin + Math.random() * Math.max(1, this.width - margin * 2);
+    this.lifeBubbles.push({
+      x,
+      originX: x,
+      y: customY,
+      radius: 19,
+      speed: 48,
+      phase: Math.random() * Math.PI * 2,
+    });
+    this.lifeBubbleSpawns += 1;
+  }
+
+  spawnShieldBubble(customX = null, customY = null) {
+    const margin = Math.min(42, this.width * 0.15);
+    const x = customX !== null
+      ? customX
+      : margin + Math.random() * Math.max(1, this.width - margin * 2);
+    const y = customY !== null
+      ? customY
+      : Math.max(120, this.player.y - Math.min(300, this.height * 0.38));
+    this.shieldBubbles.push({
+      x,
+      originX: x,
+      y,
+      radius: 19,
+      speed: 58,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+
+  triggerConsolation() {
+    if (this.level < 3 || this.lives !== 1 || this.state !== "playing") return;
+
+    const emergencyDuration = 6;
+    if (this.shieldTimer < emergencyDuration) {
+      this.shieldDuration = emergencyDuration;
+      this.shieldTimer = emergencyDuration;
+    }
+
+    if (this.lifeBubbles.length === 0) {
+      const margin = Math.min(36, this.width * 0.15);
+      const halfWidth = this.width / 2;
+      const x = margin + Math.random() * Math.max(1, halfWidth - margin);
+      this.spawnLifeBubble(x, Math.max(50, this.height * 0.12));
+    }
+
+    if (this.shieldBubbles.length === 0) {
+      const margin = Math.min(42, this.width * 0.15);
+      const halfWidth = this.width / 2;
+      const x = halfWidth + Math.random() * Math.max(1, halfWidth - margin);
+      this.spawnShieldBubble(x, Math.max(65, this.height * 0.16));
+    }
+
+    this.lifeNotice = "LAST LIFE · EMERGENCY SHIELD & BUBBLES";
+    this.lifeNoticeTimer = 3.5;
+    this.soundEvents.push("powerup");
+  }
+
   spawnWave() {
     this.wave += 1;
     this.soundEvents.push("wave");
     if (this.wave % 2 === 0 && this.lifeBubbles.length === 0) {
-      const margin = Math.min(36, this.width * 0.15);
-      const x = margin + Math.random() * Math.max(1, this.width - margin * 2);
-      this.lifeBubbles.push({
-        x,
-        originX: x,
-        y: -28,
-        radius: 19,
-        speed: 48,
-        phase: Math.random() * Math.PI * 2,
-      });
-      this.lifeBubbleSpawns += 1;
+      this.spawnLifeBubble();
       this.lifeNotice = "SHOOT PINK BUBBLE FOR +1 LIFE";
+      this.lifeNoticeTimer = 3;
+    } else if (this.level >= 3 && this.lives === 1) {
+      if (this.lifeBubbles.length === 0) {
+        this.spawnLifeBubble(null, -28);
+      }
+      if (this.shieldBubbles.length === 0 && this.shieldTimer <= 0) {
+        this.spawnShieldBubble(null, -28);
+      }
+      this.lifeNotice = "LAST LIFE · SHOOT BUBBLE FOR RELIEF";
       this.lifeNoticeTimer = 3;
     }
 
@@ -328,17 +389,13 @@ export class StarAttackGame {
         phase: 0,
         fireTimer: 0.8,
       });
-      const margin = Math.min(42, this.width * 0.15);
-      const x = margin + Math.random() * Math.max(1, this.width - margin * 2);
-      this.shieldBubbles.push({
-        x,
-        originX: x,
-        y: Math.max(120, this.player.y - Math.min(300, this.height * 0.38)),
-        radius: 19,
-        speed: 58,
-        phase: Math.random() * Math.PI * 2,
-      });
-      this.lifeNotice = "SHOOT BLUE BUBBLE FOR BOSS SHIELD";
+      this.spawnShieldBubble();
+      if (this.level >= 3 && this.lives === 1 && this.lifeBubbles.length === 0) {
+        this.spawnLifeBubble(null, Math.max(120, this.player.y - Math.min(300, this.height * 0.38)));
+        this.lifeNotice = "BOSS WAVE · SHIELD & LIFE BUBBLES READY";
+      } else {
+        this.lifeNotice = "SHOOT BLUE BUBBLE FOR BOSS SHIELD";
+      }
       this.lifeNoticeTimer = 4;
       return;
     }
@@ -386,6 +443,9 @@ export class StarAttackGame {
     this.enemyBullets = [];
     this.invulnerable = Math.max(this.invulnerable, 1.5);
     this.soundEvents.push("level");
+    if (this.level >= 3 && this.lives === 1) {
+      this.triggerConsolation();
+    }
   }
 
   updateEnemyAttacks(dt) {
@@ -603,6 +663,8 @@ export class StarAttackGame {
     if (this.lives <= 0) {
       this.state = "gameover";
       this.soundEvents.push("gameover");
+    } else if (this.lives === 1 && this.level >= 3) {
+      this.triggerConsolation();
     }
   }
 
@@ -621,7 +683,9 @@ export class StarAttackGame {
   activateBossShield(x, y) {
     this.shieldDuration = Math.max(10, 15 - Math.floor((this.level - 1) / 2));
     this.shieldTimer = this.shieldDuration;
-    this.lifeNotice = `BOSS SHIELD ${this.shieldDuration}s`;
+    this.lifeNotice = this.bosses.length > 0
+      ? `BOSS SHIELD ${this.shieldDuration}s`
+      : `SHIELD ${this.shieldDuration}s`;
     this.lifeNoticeTimer = 2.5;
     this.soundEvents.push("powerup");
     this.burst(x, y, POWERUP_COLORS.shield);

@@ -290,7 +290,9 @@ function frame(now) {
 
   if (game.lifeBubbleSpawns > announcedLifeBubbleSpawns) {
     announcedLifeBubbleSpawns = game.lifeBubbleSpawns;
-    status.textContent = "A pink life bubble appeared. Shoot it to gain one extra life.";
+    status.textContent = game.lives === 1 && game.level >= 3
+      ? "Consolation relief bubble appeared. Shoot it for shield or extra life."
+      : "A pink life bubble appeared. Shoot it to gain one extra life.";
   }
 
   if (game.lifeBubbleAwards > announcedLifeAwards) {
