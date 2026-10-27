@@ -13,12 +13,12 @@
   <body>
     <main id="game" aria-label="Star Attack game">
       <canvas id="playfield" tabindex="0" aria-label="Star Attack playfield" aria-describedby="control-help"></canvas>
-      <p id="control-help" class="visually-hidden">Move with arrow keys or W, A, S, D. Press Space to fire, M to toggle retro music, and Escape to pause or resume. From level 3, hold down and fire together to launch a missile. On touch screens, drag on the playfield to move in any direction while firing, or hold the labelled movement and fire buttons. Collect falling power-ups for extra lives, score multipliers, or speed. Enter a pilot name before play; the leaderboard is available from the menu and pause screen.</p>
+      <p id="control-help" class="visually-hidden">Move with arrow keys or W, A, S, D. Press Space to fire, M to toggle retro music, and Escape to pause or resume. From level 3, hold down and fire together to launch a missile. On touch screens, drag on the playfield to move in any direction while firing. Collect falling power-ups for extra lives, score multipliers, or speed. Enter a pilot name before play; the leaderboard is available from the menu and pause screen.</p>
       <section id="start-panel" class="panel" aria-labelledby="game-title">
         <div class="panel-card">
           <p class="eyebrow">A STARFIELD ARCADE GAME</p>
           <h1 id="game-title">STAR ATTACK</h1>
-          <p class="instructions">Mouse: move to steer, click or hold to fire.<br>Keyboard: arrows or W/A/S/D to move, Space to fire, M for music, Esc to pause.<br>From level 3, hold Down + Space to launch missiles.<br>Touch: drag to move and fire, or use the on-screen controls.<br>Choose a pilot name in browser play, or start instantly on YouTube.</p>
+          <p class="instructions">Mouse: move to steer, click or hold to fire.<br>Keyboard: arrows or W/A/S/D to move, Space to fire, M for music, Esc to pause.<br>From level 3, hold Down + Space to launch missiles.<br>Touch: drag anywhere on the playfield to move and fire.<br>Choose a pilot name in browser play, or start instantly on YouTube.</p>
           <form id="start-form" class="start-form">
             <div id="pilot-name-entry" class="pilot-name-entry">
               <label for="player-name">Pilot name</label>
@@ -72,15 +72,6 @@
           </svg>
         </button>
       </div>
-      <nav id="touch-controls" class="touch-controls" aria-label="Touch game controls">
-        <div class="move-controls" aria-label="Steering controls">
-          <button class="touch-button move-button" type="button" data-control="left" aria-label="Tap or hold to move left" aria-pressed="false">←</button>
-          <button class="touch-button move-button" type="button" data-control="up" aria-label="Tap or hold to move up" aria-pressed="false">↑</button>
-          <button class="touch-button move-button" type="button" data-control="down" aria-label="Tap or hold to move down" aria-pressed="false">↓</button>
-          <button class="touch-button move-button" type="button" data-control="right" aria-label="Tap or hold to move right" aria-pressed="false">→</button>
-        </div>
-        <button class="touch-button fire-button" type="button" data-control="fire" aria-label="Tap or hold to fire" aria-pressed="false">FIRE</button>
-      </nav>
       <p id="sr-status" class="visually-hidden" aria-live="polite"></p>
     </main>
   </body>

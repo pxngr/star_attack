@@ -41,7 +41,6 @@ export class StarAttackGame {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.touchControlsEnabled = false;
     this.stars = Array.from({ length: 90 }, () => this.makeStar(true));
     this.startRun();
     this.state = "start";
@@ -126,13 +125,8 @@ export class StarAttackGame {
     }
   }
 
-  setTouchControlsEnabled(enabled) {
-    this.touchControlsEnabled = enabled;
-    this.player.y = this.height - this.playerBottomInset();
-  }
-
   playerBottomInset() {
-    return this.touchControlsEnabled ? Math.min(132, this.height * 0.3) : 70;
+    return 70;
   }
 
   playerVerticalBounds() {

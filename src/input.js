@@ -1,15 +1,10 @@
 export class InputController {
-  constructor(canvas, controls) {
+  constructor(canvas) {
     this.canvas = canvas;
     this.touchPositions = new Map();
     this.firePointers = new Set();
-    this.leftPointers = new Set();
-    this.rightPointers = new Set();
-    this.upPointers = new Set();
-    this.downPointers = new Set();
     this.mouseX = null;
     this.mouseY = null;
-    this.tapUntil = { left: 0, right: 0, up: 0, down: 0, fire: 0 };
     this.left = false;
     this.right = false;
     this.up = false;
@@ -29,12 +24,6 @@ export class InputController {
     window.addEventListener("keydown", this.onKeyChange);
     window.addEventListener("keyup", this.onKeyChange);
     window.addEventListener("blur", () => this.reset());
-
-    this.bindHoldControl(controls.left, this.leftPointers);
-    this.bindHoldControl(controls.right, this.rightPointers);
-    this.bindHoldControl(controls.up, this.upPointers);
-    this.bindHoldControl(controls.down, this.downPointers);
-    this.bindHoldControl(controls.fire, this.firePointers);
   }
 
   onPointerMove(event) {
@@ -64,30 +53,6 @@ export class InputController {
     this.firePointers.delete(event.pointerId);
     this.touchPositions.delete(event.pointerId);
     this.releaseCapture(this.canvas, event.pointerId);
-  }
-
-  bindHoldControl(button, activePointers) {
-    button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", (event) => {
-      if (event.detail !== 0) return;
-      this.tapUntil[button.dataset.control] = performance.now() + 250;
-    });
-    button.addEventListener("pointerdown", (event) => {
-      if (event.pointerType !== "touch" && event.button !== 0) return;
-      event.preventDefault();
-      activePointers.add(event.pointerId);
-      button.setAttribute("aria-pressed", "true");
-      button.setPointerCapture(event.pointerId);
-    });
-
-    const release = (event) => {
-      activePointers.delete(event.pointerId);
-      button.setAttribute("aria-pressed", String(activePointers.size > 0));
-      this.releaseCapture(button, event.pointerId);
-    };
-    button.addEventListener("pointerup", release);
-    button.addEventListener("pointercancel", release);
-    button.addEventListener("lostpointercapture", release);
   }
 
   onKeyChange(event) {
@@ -124,41 +89,28 @@ export class InputController {
   }
 
   snapshot() {
-    const now = performance.now();
-    const left = this.left || this.leftPointers.size > 0 || now < this.tapUntil.left;
-    const right = this.right || this.rightPointers.size > 0 || now < this.tapUntil.right;
-    const up = this.up || this.upPointers.size > 0 || now < this.tapUntil.up;
-    const down = this.down || this.downPointers.size > 0 || now < this.tapUntil.down;
     const touchPositions = [...this.touchPositions.values()];
     const touchPosition = touchPositions[touchPositions.length - 1];
     return {
-      pointerX: left || right ? null : (touchPosition?.x ?? this.mouseX),
-      pointerY: up || down ? null : (touchPosition?.y ?? this.mouseY),
-      left,
-      right,
-      up,
-      down,
-      fire: this.spaceDown || this.firePointers.size > 0 || now < this.tapUntil.fire,
+      pointerX: this.left || this.right ? null : (touchPosition?.x ?? this.mouseX),
+      pointerY: this.up || this.down ? null : (touchPosition?.y ?? this.mouseY),
+      left: this.left,
+      right: this.right,
+      up: this.up,
+      down: this.down,
+      fire: this.spaceDown || this.firePointers.size > 0,
     };
   }
 
   reset() {
     this.touchPositions.clear();
     this.firePointers.clear();
-    this.leftPointers.clear();
-    this.rightPointers.clear();
-    this.upPointers.clear();
-    this.downPointers.clear();
     this.mouseX = null;
     this.mouseY = null;
-    for (const button of this.canvas.parentElement.querySelectorAll(".touch-button")) {
-      button.setAttribute("aria-pressed", "false");
-    }
     this.left = false;
     this.right = false;
     this.up = false;
     this.down = false;
     this.spaceDown = false;
-    this.tapUntil = { left: 0, right: 0, up: 0, down: 0, fire: 0 };
   }
 }

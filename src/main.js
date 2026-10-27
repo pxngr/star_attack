@@ -11,7 +11,6 @@ const pausePanel = document.querySelector("#pause-panel");
 const leaderboardPanel = document.querySelector("#leaderboard-panel");
 const finalScore = document.querySelector("#final-score");
 const status = document.querySelector("#sr-status");
-const touchControls = document.querySelector("#touch-controls");
 const utilityControls = document.querySelector("#game-utility-controls");
 const musicButton = document.querySelector("#music-button");
 const pauseButton = document.querySelector("#pause-button");
@@ -24,15 +23,8 @@ const game = new StarAttackGame(canvas.clientWidth, canvas.clientHeight);
 const audio = new RetroAudio();
 const STORAGE_KEY = "star-attack-leaderboard-v1";
 const MAX_SCORES = 10;
-const input = new InputController(canvas, {
-  left: touchControls.querySelector('[data-control="left"]'),
-  right: touchControls.querySelector('[data-control="right"]'),
-  up: touchControls.querySelector('[data-control="up"]'),
-  down: touchControls.querySelector('[data-control="down"]'),
-  fire: touchControls.querySelector('[data-control="fire"]'),
-});
+const input = new InputController(canvas);
 const renderer = new GameRenderer(canvas, game);
-const touchMode = window.matchMedia("(hover: none), (any-pointer: coarse)");
 let paused = false;
 let userPaused = false;
 let systemPaused = false;
@@ -51,21 +43,12 @@ let highestWaveReached = 0;
 let persistenceReady = false;
 let leaderboardReturnPanel = startPanel;
 
-function updateTouchControlVisibility() {
-  touchControls.hidden = !touchMode.matches || game.state !== "playing" || paused ||
-    !leaderboardPanel.hidden;
+function updateUtilityControlVisibility() {
   utilityControls.hidden = game.state !== "playing" || paused || !leaderboardPanel.hidden;
   pauseButton.hidden = game.state !== "playing" || paused || !leaderboardPanel.hidden;
 }
 
-function setTouchMode() {
-  const enabled = touchMode.matches;
-  game.setTouchControlsEnabled(enabled);
-  updateTouchControlVisibility();
-}
-
-setTouchMode();
-touchMode.addEventListener("change", setTouchMode);
+updateUtilityControlVisibility();
 
 function startRun(name = playerName) {
   playerName = name;
@@ -81,7 +64,7 @@ function startRun(name = playerName) {
   startPanel.hidden = true;
   userPaused = false;
   paused = systemPaused;
-  updateTouchControlVisibility();
+  updateUtilityControlVisibility();
   canvas.focus();
   gameoverAnnounced = false;
   status.textContent = `Game started. Pilot ${playerName}. Move in any direction and hold to fire.`;
@@ -116,7 +99,7 @@ function updatePauseState() {
   paused = userPaused || systemPaused;
   pausePanel.hidden = !userPaused || game.state !== "playing";
   pauseButton.hidden = game.state !== "playing" || paused || !leaderboardPanel.hidden;
-  updateTouchControlVisibility();
+  updateUtilityControlVisibility();
   if (paused) {
     if (animationFrameId !== null) {
       cancelAnimationFrame(animationFrameId);
@@ -149,9 +132,6 @@ function togglePause() {
 }
 
 pauseButton.addEventListener("click", togglePause);
-document.querySelector("#touch-controls").addEventListener("click", (event) => {
-  if (event.target === pauseButton) togglePause();
-});
 document.querySelector("#resume-button").addEventListener("click", () => {
   if (!userPaused) return;
   setPaused(false);
@@ -274,14 +254,14 @@ function showLeaderboard() {
   leaderboardReturnPanel.hidden = true;
   leaderboardPanel.hidden = false;
   renderLeaderboard();
-  updateTouchControlVisibility();
+  updateUtilityControlVisibility();
   document.querySelector("#close-leaderboard").focus();
 }
 
 function closeLeaderboard() {
   leaderboardPanel.hidden = true;
   leaderboardReturnPanel.hidden = false;
-  updateTouchControlVisibility();
+  updateUtilityControlVisibility();
   const focusTarget = leaderboardReturnPanel === startPanel
     ? playerNameInput
     : leaderboardReturnPanel === pausePanel
@@ -328,7 +308,7 @@ function frame(now) {
   if (game.state === "gameover" && !gameoverAnnounced) {
     gameoverAnnounced = true;
     audio.stopMusic();
-    updateTouchControlVisibility();
+    updateUtilityControlVisibility();
     finalScore.textContent = `Pilot: ${playerName}\nFinal score: ${game.score}\nWaves reached: ${game.wave}`;
     gameoverPanel.hidden = false;
     document.querySelector("#restart-button").focus();

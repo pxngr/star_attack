@@ -10,7 +10,7 @@ Serve this folder over HTTP (ES modules do not run reliably from `file://`):
 python3 -m http.server 4173
 ```
 
-Then open <http://localhost:4173>. The prototype has a start screen, keyboard/mouse controls, touch-drag movement with continuous fire, dedicated hold-to-move/hold-to-fire buttons on touch screens (including hybrid touch laptops), wave pacing, boss fights, collectible power-ups, retro synthesized music and sound effects, score, lives, and restart.
+Then open <http://localhost:4173>. The prototype has a start screen, keyboard/mouse controls, touch-drag movement with continuous fire, wave pacing, boss fights, collectible power-ups, retro synthesized music and sound effects, score, lives, and restart.
 
 ## Try it on GitHub Pages
 
@@ -22,8 +22,7 @@ GitHub Pages is public: do not upload private data, credentials, local saves, or
 
 - **Mouse:** move over the playfield to steer in both axes; click or hold to fire.
 - **Keyboard:** arrows or W/A/S/D to move; Space to fire; M toggles music; Escape pauses/resumes. The speaker and pause icon buttons sit in a separate boxed control group in the top-left on desktop and touch screens. From level 3, hold Down + Space to launch a missile. Movement is clamped to the lower 55% of the playfield.
-- **Touch:** drag anywhere on the playfield to move in both axes while firing, or tap/hold the four direction and fire buttons. Taps make a short movement or firing action; holds continue until release. You can hold fire while steering with another finger. Releasing or cancelling one touch does not cancel the other.
-- Touch targets are at least 64 CSS pixels, are labelled for assistive technology, and stay clear of the player ship. Use the start and replay buttons with touch, mouse, or keyboard.
+- **Touch:** drag anywhere on the playfield to move in both axes while firing. You can steer with multiple fingers; releasing or cancelling one touch does not cancel the others.
 - **Power-ups:** a pink bubble appears on every even-numbered wave; shoot it for an extra life. Enemies also have a small chance to drop collectible life, score multiplier, or speed power-ups. Lives cap at nine, multiplier at x5, and speed at 9. The multiplier adds a third bullet at x2 and multiplies enemy/boss scores.
 - **Levels and enemy unlocks:** defeat the boss every 10th wave to advance a level and earn a score bonus. Each level increases enemy count and movement/attack speed. Monsters join at level 2, shielded/armed aliens and missile access at level 3, and three-shot raider ships at level 4. The first wave after each unlock guarantees an example of that enemy. Standard shots cannot damage shielded aliens; missiles can.
 - **Boss shield:** each boss fight releases one shootable cyan shield bubble. Shoot it to block collisions and enemy fire for 15 seconds at early boss levels, decreasing gradually to 10 seconds at high difficulty. The remaining duration is visible above the playfield, and the shield pickup disappears when its boss is defeated.
