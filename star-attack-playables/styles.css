@@ -1,0 +1,378 @@
+:root {
+  color-scheme: dark;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #0c0c1e;
+  color: #fff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#game {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+#game {
+  position: relative;
+  background: #0c0c1e;
+}
+
+#playfield {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+#playfield:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -5px;
+}
+
+.touch-controls {
+  position: absolute;
+  z-index: 1;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.move-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 4rem);
+  grid-template-rows: repeat(3, 4rem);
+  gap: 0.2rem;
+}
+
+.move-button:nth-child(1) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.move-button:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.move-button:nth-child(3) {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.move-button:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.touch-button {
+  display: grid;
+  min-width: 4rem;
+  min-height: 4rem;
+  place-items: center;
+  padding: 0.5rem;
+  border: 1px solid rgb(255 220 120 / 75%);
+  background: rgb(12 12 30 / 76%);
+  color: #fff09a;
+  font-size: 1.5rem;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+}
+
+.touch-button:active,
+.touch-button[aria-pressed="true"] {
+  background: rgb(255 202 92 / 85%);
+  color: #19152a;
+}
+
+.fire-button {
+  min-width: 5rem;
+  min-height: 5rem;
+  border-color: #ff8c78;
+  border-radius: 50%;
+  color: #ffaaa0;
+  font-size: 0.8rem;
+}
+
+.game-utility-controls {
+  position: absolute;
+  z-index: 1;
+  top: max(0.5rem, env(safe-area-inset-top));
+  left: max(0.5rem, env(safe-area-inset-left));
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border: 1px solid rgb(255 220 120 / 48%);
+  border-radius: 0.75rem;
+  background: rgb(12 12 30 / 88%);
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 35%);
+}
+
+.game-utility-controls[hidden] {
+  display: none;
+}
+
+.utility-button {
+  display: grid;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  place-items: center;
+  padding: 0.55rem;
+  border: 1px solid rgb(255 220 120 / 42%);
+  border-radius: 0.5rem;
+  background: rgb(28 29 49 / 96%);
+  color: #fff09a;
+  cursor: pointer;
+}
+
+.utility-button:hover,
+.utility-button:focus-visible {
+  background: #37334f;
+}
+
+.music-button[aria-pressed="true"] {
+  color: #8ce8bc;
+}
+
+.music-button[aria-pressed="false"] {
+  color: #a0a6b8;
+}
+
+.music-icon,
+.pause-icon {
+  width: 1.45rem;
+  height: 1.45rem;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.music-icon .music-note,
+.music-icon .music-off-mark {
+  fill: none;
+}
+
+.music-icon .music-off-mark {
+  display: none;
+}
+
+.music-icon .music-on {
+  fill: currentColor;
+}
+
+.music-button[aria-pressed="false"] .music-on {
+  display: none;
+}
+
+.music-button[aria-pressed="false"] .music-off-mark {
+  display: block;
+}
+
+.touch-controls[hidden] {
+  display: none;
+}
+
+@media (hover: none), (any-pointer: coarse) {
+  .touch-controls {
+    display: flex;
+  }
+}
+
+.panel {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: max(1.25rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right))
+    max(1.25rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+  background: rgb(5 6 18 / 72%);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel-card {
+  width: min(100%, 30rem);
+  padding: clamp(1.5rem, 6vw, 3rem);
+  border: 1px solid rgb(255 220 120 / 45%);
+  border-radius: 1.25rem;
+  background: rgb(12 12 30 / 94%);
+  box-shadow: 0 0 3rem rgb(255 160 60 / 12%);
+  text-align: center;
+}
+
+.start-form {
+  display: grid;
+  justify-items: stretch;
+  gap: 0.6rem;
+  margin: 1.25rem 0 0.75rem;
+  text-align: left;
+}
+
+.pilot-name-entry {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.start-form label {
+  color: #fff09a;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.start-form input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgb(255 220 120 / 55%);
+  border-radius: 0.6rem;
+  background: #080a19;
+  color: #fff;
+  font: inherit;
+}
+
+.start-form input:focus-visible {
+  outline: 3px solid #fff09a;
+  outline-offset: 2px;
+}
+
+.start-form button,
+.secondary-button {
+  justify-self: center;
+  margin-top: 0.35rem;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.secondary-button {
+  min-height: 2.75rem;
+  border: 1px solid rgb(255 220 120 / 55%);
+  background: #17172a;
+  color: #fff09a;
+}
+
+.pause-button {
+  color: #fff09a;
+}
+
+.pause-button[hidden] {
+  display: none;
+}
+
+.leaderboard-card {
+  max-height: min(85vh, 42rem);
+  overflow: auto;
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 1.25rem 0;
+  padding-left: 2rem;
+  text-align: left;
+}
+
+.leaderboard-caption {
+  margin: 0.25rem 0;
+  color: #c5cbe0;
+  font-size: 0.75rem;
+}
+
+.leaderboard-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgb(255 220 120 / 20%);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 4%);
+}
+
+#leaderboard-empty {
+  color: #c5cbe0;
+}
+
+.eyebrow {
+  color: #ffc85c;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+h1,
+h2 {
+  margin: 0.6rem 0 1rem;
+  color: #fff09a;
+  font-size: clamp(2rem, 11vw, 3.4rem);
+  line-height: 1;
+}
+
+.instructions {
+  margin: 1.5rem auto;
+  color: #e3e5f2;
+  font-size: clamp(0.85rem, 3.5vw, 1rem);
+  line-height: 1.7;
+}
+
+#final-score {
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+button {
+  min-width: 10rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: #ffca5c;
+  color: #19152a;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

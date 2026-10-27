@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0c0c1e">
+    <meta name="description" content="A quick space shooter. Move, shoot, and survive the waves.">
+    <title>Star Attack</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://www.youtube.com/game_api/v1"></script>
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <main id="game" aria-label="Star Attack game">
+      <canvas id="playfield" tabindex="0" aria-label="Star Attack playfield" aria-describedby="control-help"></canvas>
+      <p id="control-help" class="visually-hidden">Move with arrow keys or W, A, S, D. Press Space to fire, M to toggle retro music, and Escape to pause or resume. From level 3, hold down and fire together to launch a missile. On touch screens, drag on the playfield to move in any direction while firing, or hold the labelled movement and fire buttons. Collect falling power-ups for extra lives, score multipliers, or speed. Enter a pilot name before play; the leaderboard is available from the menu and pause screen.</p>
+      <section id="start-panel" class="panel" aria-labelledby="game-title">
+        <div class="panel-card">
+          <p class="eyebrow">A STARFIELD ARCADE GAME</p>
+          <h1 id="game-title">STAR ATTACK</h1>
+          <p class="instructions">Mouse: move to steer, click or hold to fire.<br>Keyboard: arrows or W/A/S/D to move, Space to fire, M for music, Esc to pause.<br>From level 3, hold Down + Space to launch missiles.<br>Touch: drag to move and fire, or use the on-screen controls.<br>Choose a pilot name in browser play, or start instantly on YouTube.</p>
+          <form id="start-form" class="start-form">
+            <div id="pilot-name-entry" class="pilot-name-entry">
+              <label for="player-name">Pilot name</label>
+              <input id="player-name" name="playerName" type="text" minlength="1" maxlength="20" autocomplete="nickname" disabled required>
+            </div>
+            <button id="start-button" type="submit" disabled>Loading leaderboard…</button>
+          </form>
+          <button id="show-leaderboard" class="secondary-button" type="button">Leaderboard</button>
+        </div>
+      </section>
+      <section id="gameover-panel" class="panel" aria-labelledby="gameover-title" hidden>
+        <div class="panel-card">
+          <p class="eyebrow">RUN COMPLETE</p>
+          <h2 id="gameover-title">GAME OVER</h2>
+          <p id="final-score"></p>
+          <button id="restart-button" type="button">Play again</button>
+          <button class="secondary-button show-leaderboard" type="button">Leaderboard</button>
+        </div>
+      </section>
+      <section id="pause-panel" class="panel" aria-labelledby="pause-title" hidden>
+        <div class="panel-card">
+          <p class="eyebrow">RUN PAUSED</p>
+          <h2 id="pause-title">PAUSED</h2>
+          <p id="pause-player"></p>
+          <button id="resume-button" type="button">Resume</button>
+          <button class="secondary-button show-leaderboard" type="button">Leaderboard</button>
+        </div>
+      </section>
+      <section id="leaderboard-panel" class="panel" aria-labelledby="leaderboard-title" hidden>
+        <div class="panel-card leaderboard-card">
+          <p class="eyebrow">TOP PILOTS</p>
+          <h2 id="leaderboard-title">LEADERBOARD</h2>
+          <p class="leaderboard-caption">Top runs saved to this browser or YouTube profile.</p>
+          <ol id="leaderboard-list" class="leaderboard-list"></ol>
+          <p id="leaderboard-empty">No scores yet. Be the first pilot!</p>
+          <button id="close-leaderboard" type="button">Back</button>
+        </div>
+      </section>
+      <div id="game-utility-controls" class="game-utility-controls" hidden>
+        <button id="music-button" class="utility-button music-button" type="button" aria-label="Turn music off" aria-pressed="true" title="Turn music off">
+          <svg class="music-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="music-note" d="M10 18V5l10-2v13M10 8l10-2"></path>
+            <circle class="music-on" cx="7" cy="18" r="3"></circle>
+            <circle class="music-on" cx="17" cy="16" r="3"></circle>
+            <path class="music-off-mark" d="m4 4 16 16"></path>
+          </svg>
+        </button>
+        <button id="pause-button" class="utility-button pause-button" type="button" aria-label="Pause game" title="Pause game" hidden>
+          <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 5h4v14H7zM15 5h4v14h-4z"></path>
+          </svg>
+        </button>
+      </div>
+      <nav id="touch-controls" class="touch-controls" aria-label="Touch game controls">
+        <div class="move-controls" aria-label="Steering controls">
+          <button class="touch-button move-button" type="button" data-control="left" aria-label="Tap or hold to move left" aria-pressed="false">←</button>
+          <button class="touch-button move-button" type="button" data-control="up" aria-label="Tap or hold to move up" aria-pressed="false">↑</button>
+          <button class="touch-button move-button" type="button" data-control="down" aria-label="Tap or hold to move down" aria-pressed="false">↓</button>
+          <button class="touch-button move-button" type="button" data-control="right" aria-label="Tap or hold to move right" aria-pressed="false">→</button>
+        </div>
+        <button class="touch-button fire-button" type="button" data-control="fire" aria-label="Tap or hold to fire" aria-pressed="false">FIRE</button>
+      </nav>
+      <p id="sr-status" class="visually-hidden" aria-live="polite"></p>
+    </main>
+  </body>
+</html>
