@@ -1,13 +1,12 @@
 # Star Attack: YouTube Playables prototype
 
-This is a separate, browser-native project alongside the original Pygame game. It starts a Canvas 2D port without changing `../game.py`.
+This is the browser-native version of Star Attack. The original Pygame reference is preserved in `archive/`.
 
 ## Run locally
 
 Serve this folder over HTTP (ES modules do not run reliably from `file://`):
 
 ```sh
-cd star-attack-playables
 python3 -m http.server 4173
 ```
 
@@ -15,7 +14,7 @@ Then open <http://localhost:4173>. The prototype has a start screen, keyboard/mo
 
 ## Try it on GitHub Pages
 
-This folder is structured to be the root of a standalone GitHub repository. The workflow at `.github/workflows/pages.yml` deploys the site whenever code is pushed to `main` or `master` (or when manually triggered). Create a **public** repository, push the contents of this folder with `index.html` at the repository root, and enable GitHub Pages with **GitHub Actions** as the build/deploy source if prompted. After the Pages workflow succeeds, the public URL will be shown in the workflow deployment summary and under repository **Settings → Pages**.
+The workflow at `.github/workflows/pages.yml` deploys the game whenever code is pushed to `main` or `master` (or when manually triggered). Enable GitHub Pages with **GitHub Actions** as the build/deploy source under repository **Settings → Pages** if prompted. A publicly accessible Pages site requires a public repository on GitHub Free, or a plan that supports Pages from a private repository. After the workflow succeeds, the site URL appears in the Actions deployment summary and under **Settings → Pages**.
 
 GitHub Pages is public: do not upload private data, credentials, local saves, or development-only files. The standalone app stores its local leaderboard in each visitor's own browser.
 
